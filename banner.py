@@ -15,32 +15,30 @@ def grab_banner(ip, port, timeout=2):
         str: The banner received from the service, or None if it fails.
     """
     try:
-        # Create a new socket using IPv4 and TCP
+        
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(timeout)
         
-        # Attempt to connect to the target
+        
         s.connect((ip, port))
         
-        # Receive up to 1024 bytes of data (the banner)
+       
         banner = s.recv(1024)
         
-        # Close the socket connection
+        
         s.close()
         
-        # Decode the banner from bytes to a string and return it
+       
         return banner.decode('utf-8', errors='ignore').strip()
         
     except socket.timeout:
-        # Handle connection timeout
+        
         return None
     except socket.error as e:
-        # Handle other socket errors (e.g., connection refused)
-        # print(f"[-] Socket error for {ip}:{port} - {e}") # Uncomment for verbose error logging
+
         return None
     except Exception as e:
-        # Handle any other unexpected exceptions
-        # print(f"[-] An unexpected error occurred for {ip}:{port} - {e}") # Uncomment for verbose error logging
+
         return None
 
 def main():
@@ -50,11 +48,10 @@ def main():
     print("--- Python Subnet Banner Grabber ---")
     print("=" * 35)
 
-    # --- User Input ---
-    # Get the subnet from the user (e.g., 192.168.1.0/24)
+
     subnet_str = input("Enter the subnet to scan (e.g., 192.168.1.0/24): ")
     
-    # Get the port from the user (e.g., 80, 22, 21)
+
     try:
         port_str = input("Enter the port to grab banners from (e.g., 80): ")
         port = int(port_str)
@@ -65,9 +62,9 @@ def main():
         print("Error: Invalid port number.")
         sys.exit(1)
 
-    # --- Network Processing ---
+
     try:
-        # Create a network object from the user's input string
+        
         network = ipaddress.ip_network(subnet_str, strict=False)
         print(f"\n[+] Scanning subnet: {network}")
         print(f"[+] Targeting port: {port}")
@@ -77,12 +74,12 @@ def main():
         sys.exit(1)
 
     found_count = 0
-    # Iterate over every possible host IP address in the specified subnet
+    
     for ip in network.hosts():
         ip_str = str(ip)
         print(f"[*] Checking host: {ip_str}...")
         
-        # Attempt to grab the banner for the current IP and port
+        
         banner = grab_banner(ip_str, port)
         
         if banner:
